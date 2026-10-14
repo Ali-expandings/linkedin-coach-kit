@@ -188,20 +188,22 @@ def main():
           out["headline"] == "Student at Test University" and out["about"] == "Old about text."
           and out["experience"][0]["id"] == "exp-1" and "tracking_noise" not in out["experience"][0], out)
 
-    RECORDED.clear()
     err, out = c.call("lookup_ids", {"type": "LOCATION", "keywords": "Egypt"})
     r = RECORDED[-1]
     check("lookup_ids: GET search/parameters with type, keywords, limit",
           r["path"] == "/v2/acc_li/linkedin/search/parameters"
           and r["query"] == {"type": "LOCATION", "keywords": "Egypt", "limit": "10"}, r)
 
-    RECORDED.clear()
     err, out = c.call("search_jobs", {"keywords": "marketing intern", "location": ["106155005"], "date_posted": "PAST_WEEK",
                                       "filters": {"easy_apply": True}})
     r = RECORDED[-1]
     check("search_jobs: POST search/jobs with body", r["method"] == "POST" and r["path"] == "/v2/acc_li/linkedin/search/jobs"
           and r["body"] == {"keywords": "marketing intern", "easy_apply": True, "location": ["106155005"],
                             "date_posted": "PAST_WEEK"} and r["query"] == {"limit": "10"}, r)
+
+    calls_since_status = [r for r in RECORDED]
+    check("account id is resolved once, not on every call",
+          not any(r["path"] == "/v2/accounts/" for r in calls_since_status), [r["path"] for r in calls_since_status])
 
     RECORDED.clear()
     err, out = c.call("connect_linkedin")

@@ -21,7 +21,10 @@ sentence and say what you are doing about it.
   The API can change: About (`bio`), headline, location, experience (add / edit / delete, with a link
   attached as `media`), education (add / edit / delete), skills (add only), open to work, the custom
   profile link, profile photo and banner. It **cannot** change: certifications, projects, languages,
-  volunteering, honors, the top-skills order, removing skills, or the name.
+  volunteering, honors, the top-skills order, removing skills, the name, the industry field, or the
+  public profile URL (`linkedin.com/in/...`). Photo and banner *are* API edits: they only need the
+  image files in `inbox/` — if there are none, ask the user to add them there, don't send them to the
+  browser for that.
 - **LinkedIn reader** (`linkedin_*` tools). Used in browser mode, and as a fallback reader. Reads profiles, jobs and companies through the user's
   saved LinkedIn login. Use `linkedin_get_my_profile` with `sections` as a comma-separated string,
   for example `"experience,education,skills,projects,certifications,honors,languages"`. It is slow
@@ -199,7 +202,7 @@ to change." If they ask for changes, update the plan and show only what changed.
 **API mode, before the preview:** run `unipile_update_profile` *without* `apply` (a dry run) for
 every API change and fix anything it reports, so the preview only contains changes that will go
 through. In the preview, list the items that need the browser (certifications, projects, languages,
-volunteering, honors, top-skills order, removing skills) and ask once: "I can do these in the browser,
+volunteering, honors, top-skills order, removing skills, industry, public profile URL) and ask once: "I can do these in the browser,
 or give you the text to paste yourself — which do you prefer?"
 
 ### Phase 7 — Apply
@@ -218,7 +221,8 @@ or give you the text to paste yourself — which do you prefer?"
 
 Then call `unipile_read_my_profile` once and check every change arrived. LinkedIn can lag; if
 something is missing, wait a minute and re-read once before reporting it. Tell the user one line per
-section ("Headline saved ✓"). Finally do the browser-only items with the playbook below — or, if the
+section ("Headline saved ✓"). Finally do the browser-only items (certifications, projects, languages, volunteering, honors,
+top-skills order, removing skills, industry, public profile URL) with the playbook below — or, if the
 user chose to paste them, put the exact text and clicks in the report.
 
 **Browser mode.** Apply in this order: headline → About and top skills → experience → education → projects → skills →

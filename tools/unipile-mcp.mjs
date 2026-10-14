@@ -83,12 +83,15 @@ async function api(method, route, { query, body } = {}) {
   return data;
 }
 
+let cachedAccountId = null; // resolved once per server process, not on every call
+
 async function accountId(explicit) {
   if (explicit) return explicit;
   const cfg = loadConfig();
   if (cfg.accountId) return cfg.accountId;
+  if (cachedAccountId) return cachedAccountId;
   const accounts = await linkedinAccounts();
-  if (accounts.length === 1) return accounts[0].id;
+  if (accounts.length === 1) return (cachedAccountId = accounts[0].id);
   if (accounts.length === 0) {
     throw new UserError("No LinkedIn account is linked to Unipile yet. Call connect_linkedin first.");
   }
@@ -267,6 +270,7 @@ const TOOLS = [
     run: async () => {
       const accounts = await linkedinAccounts();
       const cfg = loadConfig();
+      if (!cfg.accountId && accounts.length === 1) cachedAccountId = accounts[0].id;
       return {
         api_key: "valid",
         linkedin_accounts: accounts,
