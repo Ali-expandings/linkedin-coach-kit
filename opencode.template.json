@@ -21,6 +21,12 @@
         "--output-dir", "__KIT__/.browser-output"
       ],
       "timeout": 120000
+    },
+    "unipile": {
+      "type": "local",
+      "cwd": "__KIT__",
+      "command": ["__NODE__", "__KIT__/tools/unipile-mcp.mjs"],
+      "timeout": 120000
     }
   },
   "permission": {

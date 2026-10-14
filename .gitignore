@@ -4,6 +4,8 @@ tools/node_modules/
 tools/uv/
 tools/node/
 tools/_download/
+# Unipile API key (secret)
+tools/unipile.json
 # the user's own data and browser login
 .browser-profile/
 .browser-output/

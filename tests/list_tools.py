@@ -16,6 +16,7 @@ EXPECTED = {
     "linkedin": {"get_my_profile", "get_person_profile", "search_jobs", "get_job_details", "close_session"},
     "chrome": {"browser_navigate", "browser_snapshot", "browser_click", "browser_type",
                "browser_press_key", "browser_select_option", "browser_file_upload"},
+    "unipile": {"status", "connect_linkedin", "read_my_profile", "lookup_ids", "search_jobs", "update_profile"},
 }
 
 
