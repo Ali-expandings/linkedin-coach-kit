@@ -8,7 +8,9 @@ Google Chrome, and internet.
 
 ## 1. Set up (once, about 10 minutes)
 
-1. Unzip this folder somewhere simple, for example `C:\linkedin-coach`. Right-click the zip →
+1. Get the kit: on https://github.com/Ali-expandings/linkedin-coach-kit click the green
+   **Code** button → **Download ZIP** (or use the zip someone sent you).
+   Unzip it somewhere simple, for example `C:\linkedin-coach`: right-click the zip →
    **Extract All**. Don't run anything from inside the zip.
 2. Double-click **`setup.cmd`**.
    If Windows shows "Windows protected your PC", click **More info → Run anyway**.
@@ -42,7 +44,9 @@ profile photo, or an old chat with ChatGPT about your CV (copy the chat into a `
 
 ## 1. التسطيب (مرة واحدة، حوالي 10 دقايق)
 
-1. فك ضغط الفولدر في مكان بسيط، مثلاً `C:\linkedin-coach`: كليك يمين على الملف المضغوط ←
+1. نزّل الكيت: من https://github.com/Ali-expandings/linkedin-coach-kit دوس الزرار الأخضر
+   **Code** ← **Download ZIP** (أو استخدم الملف المضغوط اللي اتبعتلك).
+   فك الضغط في مكان بسيط، مثلاً `C:\linkedin-coach`: كليك يمين على الملف المضغوط ←
    **Extract All**. ما تشغلش أي حاجة من جوه الملف المضغوط.
 2. دبل كليك على **`setup.cmd`**.
    لو ويندوز ظهرت رسالة "Windows protected your PC" دوس **More info ← Run anyway**.
