@@ -216,31 +216,51 @@ its pages; if something looks different, take a snapshot and adapt, but prefer t
 | New project | `https://www.linkedin.com/in/<id>/edit/forms/project/new/` |
 | Anything else | the profile's "Add profile section" button |
 
-**About text (rich editor).** The About box is a rich-text editor; plain typing collapses blank
-lines. Click into the editor, select all and delete, then insert paragraph by paragraph with real
-keystrokes:
+**Every text box is a rich editor.** The headline, About, and the description boxes (experience,
+project, education) are all the same kind of rich editor. `chrome_browser_type` *adds* to the text
+already there instead of replacing it (the headline then fails its length check). Always replace text
+with this, then check the returned text and length before saving:
 
 ```js
-// chrome_browser_run_code_unsafe
+// chrome_browser_run_code_unsafe — replace the text in one LinkedIn text box
 async (page) => {
-  const editor = page.locator('div[aria-label="About"][contenteditable="true"]');
-  await editor.click();
+  // Pick the box (all tested October 2026):
+  //   About (About form)        page.locator('div[aria-label="About"][contenteditable="true"]')
+  //   Headline (intro form)     page.getByTestId('ui-core-tiptap-text-editor-wrapper').getByRole('textbox')
+  //   Any description box       page.getByRole('textbox', { name: /^Description/ })
+  const box = page.getByRole('textbox', { name: /^Description/ });
+  const lines = [/* the text, one entry per line or paragraph */];
+  const blankLineBetween = false;   // true for About (blank line between paragraphs), false for descriptions
+  await box.click();
   await page.keyboard.press('ControlOrMeta+a');
   await page.keyboard.press('Backspace');
-  const paragraphs = [/* the About paragraphs, in order */];
-  for (let i = 0; i < paragraphs.length; i++) {
-    await page.keyboard.insertText(paragraphs[i]);
-    if (i < paragraphs.length - 1) { await page.keyboard.press('Enter'); await page.keyboard.press('Enter'); }
+  for (let i = 0; i < lines.length; i++) {
+    await page.keyboard.insertText(lines[i]);
+    if (i < lines.length - 1) {
+      await page.keyboard.press('Enter');
+      if (blankLineBetween) await page.keyboard.press('Enter');
+    }
   }
-  return await editor.innerText();
+  await page.waitForTimeout(500);
+  const text = await box.innerText();
+  return { length: text.length, text };
 }
 ```
 
-Check the returned text before saving. Two Enters make one blank line; LinkedIn keeps it.
+`innerText` shows paragraph breaks as several `\n` characters; that is normal. Limits: headline 220,
+About 2,600, descriptions 2,000 characters.
 
-**Top skills order.** In the same About form, each top skill has a drag handle that also works from
-the keyboard. Use this exact code (search the whole page — scoping it to `div[role="dialog"]` times
-out) and don't drag with the mouse:
+**Opening the right form** (tested): headline, name and location are in the intro form behind the
+pencil on the profile's top card. To edit an experience, open `/details/experience/` and click the
+pencil named "Edit <title> at <company>". To add a certification, open `/details/certifications/` and
+click "Add a certification".
+
+**Leaving a form without saving** (test mode, or to back out): click "Dismiss", then "Discard" when
+LinkedIn asks. Every form asks.
+
+**Top skills order.** In the About form, each top skill has a drag handle that also works from the
+keyboard. Use this exact code (tested; search the whole page — scoping it to `div[role="dialog"]`
+times out) and don't drag with the mouse:
 
 ```js
 // chrome_browser_run_code_unsafe — move SKILL to position TO (0 = first)
@@ -260,22 +280,22 @@ async (page) => {
 
 Check that the returned order is the one you wanted before saving.
 
-**Plain text boxes** (experience, project, education descriptions): `chrome_browser_type` with the
-full text, line breaks included, works.
-
 **Type-to-search fields** (company, school, skill, issuing organisation): type with `slowly: true`,
-wait a second, snapshot, and click the matching suggestion. If no suggestion fits, a typed company
+wait about 1.5 seconds (`chrome_browser_wait_for`), snapshot, and click the matching suggestion
+(tested: typing "Hult Prize" offered "EF Hult Prize Foundation"). If no suggestion fits, a typed company
 or school name is accepted as plain text; a skill is not, so pick the closest real suggestion or
 skip that skill.
 
-**Month and year.** They are dropdowns: use `chrome_browser_select_option` with the month name and
-the year.
+**Month and year.** They are dropdowns: use `chrome_browser_select_option` with the month name
+(`"July"`) and the year (`"2025"`). Tested on the certification form.
 
 **Project links.** "Add media → Add a link" is broken on LinkedIn: it accepts the URL, then shows a
 preview error and disables Save. Don't use it. Put the link on its own line at the end of the
 description instead: `Link: https://…`.
 
-**Saving.** Before Save, if there is a "Notify network" / "Share with network" toggle, switch it off.
+**Saving.** Before Save, check the "notify your network" switch
+(`page.getByRole('switch', { name: /notify your network/i })`, read `aria-checked`) and switch it
+off if it is on.
 After Save, dismiss any "share this update" or "add more" prompt (Skip / Not now / close). If a
 "Discard changes?" dialog appears when you didn't intend to leave, choose to keep editing.
 
