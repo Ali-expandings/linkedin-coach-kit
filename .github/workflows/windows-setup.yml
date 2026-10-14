@@ -41,13 +41,19 @@ jobs:
       - name: Coach browser profile launches (not signed in on CI, so exit 2 is expected)
         shell: pwsh
         run: |
+          # exit 2 is the expected answer here; stop pwsh from treating it as a failure
+          $PSNativeCommandUseErrorActionPreference = $false
           $out = & tools\node\node.exe tools\seed-browser-login.mjs --browser chrome --check-only 2>&1 | Out-String
+          $code = $LASTEXITCODE
           Write-Host $out
-          if ($LASTEXITCODE -ne 2 -or $out -notmatch 'NOT_LOGGED_IN') { throw "unexpected result: exit $LASTEXITCODE" }
+          if ($code -ne 2 -or $out -notmatch 'NOT_LOGGED_IN') { throw "unexpected result: exit $code" }
+          Write-Host "OK  Chrome opened the coach profile and LinkedIn asked for sign-in, as expected on CI"
+          exit 0
 
       - name: OpenCode 1.19.0 loads the project config and connects both servers
         shell: pwsh
         run: |
+          $PSNativeCommandUseErrorActionPreference = $false
           npm install -g opencode-ai@1.19.0 --no-audit --no-fund
           opencode --version
           $out = opencode mcp list 2>&1 | Out-String
