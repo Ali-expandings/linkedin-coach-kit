@@ -90,7 +90,10 @@ what's done, what's next).
 2. Call `chrome_browser_navigate` to `https://www.linkedin.com/feed/`. If the resulting URL contains
    `login`, `authwall`, `checkpoint` or `signup`, tell the user "Please sign in to LinkedIn in the
    Chrome window I just opened, then tell me when you're done." Re-check after they reply.
-3. Say one line: everything is connected, and what happens next.
+3. Say one line: everything is connected, and what happens next. The first time, also say that a
+   Chrome window has opened, that it is how you edit the profile, that its grey "unsupported
+   command-line flag" bar is expected, and that they should leave it open and not click in it while
+   you work.
 
 ### Phase 2 — Read everything (automatic)
 
@@ -236,8 +239,26 @@ async (page) => {
 Check the returned text before saving. Two Enters make one blank line; LinkedIn keeps it.
 
 **Top skills order.** In the same About form, each top skill has a drag handle that also works from
-the keyboard: focus the handle (`button[aria-roledescription="sortable"]` in that skill's row),
-press Space, ArrowUp once per position, Space. Don't drag with the mouse.
+the keyboard. Use this exact code (search the whole page — scoping it to `div[role="dialog"]` times
+out) and don't drag with the mouse:
+
+```js
+// chrome_browser_run_code_unsafe — move SKILL to position TO (0 = first)
+async (page) => {
+  const SKILL = 'TypeScript', TO = 0;
+  const handles = page.locator('button[aria-roledescription="sortable"]');
+  const names = () => handles.evaluateAll(bs => bs.map(b => (b.closest('li')?.innerText || '').trim()));
+  const from = (await names()).indexOf(SKILL);
+  if (from < 0) return 'not found: ' + JSON.stringify(await names());
+  await handles.nth(from).focus();
+  await page.keyboard.press('Space'); await page.waitForTimeout(400);
+  for (let i = 0; i < from - TO; i++) { await page.keyboard.press('ArrowUp'); await page.waitForTimeout(400); }
+  await page.keyboard.press('Space'); await page.waitForTimeout(1000);
+  return await names();
+}
+```
+
+Check that the returned order is the one you wanted before saving.
 
 **Plain text boxes** (experience, project, education descriptions): `chrome_browser_type` with the
 full text, line breaks included, works.

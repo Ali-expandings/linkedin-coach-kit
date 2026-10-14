@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Run setup.cmd (what the user double-clicks), CI mode
         shell: cmd

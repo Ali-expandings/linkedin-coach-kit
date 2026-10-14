@@ -23,6 +23,10 @@ Google Chrome, and internet.
 2. Open the `linkedin-coach` folder as a project.
 3. Type **hi** and press Enter. The coach asks which language you want and takes it from there.
 
+A Chrome window opens while the coach works; that's how it edits your profile. It shows a grey bar
+saying "unsupported command-line flag". That's expected and safe. Leave the window open and don't
+click in it while the coach is typing.
+
 Optional: before you start, put any of these into the `inbox` folder — your CV, certificates, a
 profile photo, or an old chat with ChatGPT about your CV (copy the chat into a `.txt` file).
 
@@ -58,6 +62,9 @@ profile photo, or an old chat with ChatGPT about your CV (copy the chat into a `
 1. افتح برنامج **OpenCode**.
 2. افتح فولدر `linkedin-coach` كمشروع (project).
 3. اكتب **hi** ودوس Enter. المدرب هيسألك تحب تتكلم بأي لغة ويكمّل هو.
+
+هيفتح شباك كروم والمدرب شغال، ده اللي بيعدّل بيه البروفايل. هيظهر فيه شريط رمادي مكتوب فيه
+"unsupported command-line flag"، ده طبيعي ومفيش مشكلة. سيب الشباك مفتوح وما تدوسش جواه والمدرب بيكتب.
 
 اختياري: قبل ما تبدأ حط في فولدر `inbox` أي حاجة من دول: الـ CV، الشهادات، صورة البروفايل، أو
 محادثة قديمة مع ChatGPT عن الـ CV (انسخها في ملف `.txt`).
