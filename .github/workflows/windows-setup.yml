@@ -85,3 +85,25 @@ jobs:
       - name: Running setup a second time is safe
         shell: cmd
         run: setup.cmd -CI
+
+  install-with-opencode:
+    # Runs the exact download command from INSTALL-WITH-OPENCODE.md, then setup in CI mode.
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - name: Step 1 command from INSTALL-WITH-OPENCODE.md (downloads the public main.zip)
+        shell: cmd
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; [Net.ServicePointManager]::SecurityProtocol='Tls12'; $dest='C:\linkedin-coach'; if (Test-Path (Join-Path $dest 'setup.cmd')) { 'ALREADY_INSTALLED' } else { $zip=Join-Path $env:TEMP 'linkedin-coach.zip'; Invoke-WebRequest -UseBasicParsing 'https://github.com/Ali-expandings/linkedin-coach-kit/archive/refs/heads/main.zip' -OutFile $zip; $tmp=Join-Path $env:TEMP 'linkedin-coach-unzip'; if (Test-Path $tmp) { Remove-Item -Recurse -Force $tmp }; Expand-Archive -Force $zip $tmp; New-Item -ItemType Directory -Force $dest | Out-Null; Copy-Item -Recurse -Force (Join-Path $tmp 'linkedin-coach-kit-main\*') $dest; Get-ChildItem -Recurse $dest | Unblock-File; 'INSTALLED' }"
+          if not exist C:\linkedin-coach\setup.cmd exit /b 1
+      - name: Running Step 1 again says ALREADY_INSTALLED
+        shell: cmd
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -Command "$dest='C:\linkedin-coach'; if (Test-Path (Join-Path $dest 'setup.cmd')) { 'ALREADY_INSTALLED' } else { exit 1 }"
+      - name: setup.cmd from the installed folder (CI mode)
+        shell: cmd
+        run: |
+          cd /d C:\linkedin-coach
+          call setup.cmd -CI || exit /b 1
+          if not exist C:\linkedin-coach\opencode.json exit /b 1
+          type C:\linkedin-coach\opencode.json
