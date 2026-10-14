@@ -30,23 +30,6 @@ click in it while the coach is typing.
 Optional: before you start, put any of these into the `inbox` folder — your CV, certificates, a
 profile photo, or an old chat with ChatGPT about your CV (copy the chat into a `.txt` file).
 
-## Optional: edit through an API instead of the browser
-
-With a **Unipile** API key the coach changes most of your profile with direct API calls: About,
-headline, experience, education, skills, open to work and photo. The browser is then only needed
-for certifications, projects and languages (or the coach gives you that text to paste yourself).
-Unipile is a paid service (about $55/month) with a **7-day free trial, no card needed**, which is
-enough for one profile makeover.
-
-1. Sign up at https://dashboard.unipile.com/signup
-2. Create an API key in the dashboard and copy it (it's shown only once).
-3. Run `setup.cmd` again and paste the key when it asks. The first time the coach runs, it sends you
-   a link to connect your LinkedIn to Unipile.
-
-Unipile is a separate company, not LinkedIn. Connecting adds a session you can see (and end) in
-LinkedIn under Settings → Sign in & security → Where you're signed in. Once the key is in the folder,
-don't share the folder with anyone.
-
 ## If something goes wrong
 
 - Run `setup.cmd` again. It's safe and fixes most problems.
@@ -85,21 +68,6 @@ don't share the folder with anyone.
 
 اختياري: قبل ما تبدأ حط في فولدر `inbox` أي حاجة من دول: الـ CV، الشهادات، صورة البروفايل، أو
 محادثة قديمة مع ChatGPT عن الـ CV (انسخها في ملف `.txt`).
-
-## اختياري: التعديل عن طريق API بدل المتصفح
-
-لو عندك مفتاح API من **Unipile**، المدرب هيعدّل أغلب البروفايل باستدعاءات API مباشرة: النبذة (About)،
-العنوان (Headline)، الخبرات، التعليم، المهارات، Open to work والصورة. المتصفح هيتستخدم بس للشهادات
-والمشاريع واللغات (أو المدرب يديك النص تلزقه بنفسك). Unipile خدمة مدفوعة (حوالي 55 دولار في الشهر)
-وفيها **تجربة مجانية 7 أيام من غير كارت**، وده كفاية لتظبيط بروفايل مرة واحدة.
-
-1. اعمل حساب من https://dashboard.unipile.com/signup
-2. اعمل API key من الداشبورد وانسخه (بيظهر مرة واحدة بس).
-3. شغّل `setup.cmd` تاني والزق المفتاح لما يطلبه. أول مرة المدرب يشتغل هيبعتلك لينك توصّل بيه
-   LinkedIn بتاعك بـ Unipile.
-
-Unipile شركة منفصلة مش LinkedIn. التوصيل بيضيف جلسة تقدر تشوفها (وتقفلها) من إعدادات LinkedIn في
-Sign in & security ← Where you're signed in. بعد ما تحط المفتاح ما تبعتش الفولدر لحد.
 
 ## لو حصلت مشكلة
 

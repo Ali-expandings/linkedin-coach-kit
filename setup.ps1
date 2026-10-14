@@ -2,7 +2,7 @@
 # Run it by double-clicking setup.cmd. Safe to run again at any time.
 #
 #   -CI          automated test mode: install and configure everything, skip the LinkedIn sign-in.
-#   -UnipileKey  optional Unipile API key (otherwise setup asks; Enter skips).
+#   -UnipileKey  optional Unipile API key (advanced; without it the coach uses browser mode).
 #
 # Everything is installed inside this folder (tools\), pinned to tested versions and checked
 # against published SHA-256 hashes. Nothing is added to PATH and no admin rights are needed.
@@ -189,17 +189,9 @@ if ($loggedIn -and -not $CI) {
 }
 
 # ---------------------------------------------------------------- 7. Unipile (optional)
-Step 7 'Unipile API key (optional: lets the coach edit through an API instead of the browser)'
+Step 7 'Edit mode'
 $unipileFile = Join-Path $Tools 'unipile.json'
 $key = $UnipileKey
-if (-not $key -and -not $CI) {
-    if (Test-Path $unipileFile) { Write-Host '      A Unipile key is already saved. Press Enter to keep it.' }
-    Write-Host '      Paste your Unipile API key and press Enter, or just press Enter to skip.' -ForegroundColor White
-    $secure = Read-Host -AsSecureString '      Unipile API key'
-    $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
-    try { $key = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr) }
-    finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
-}
 if ($key) {
     $key = ($key.Trim() -replace '[\\"\s]', '')
     [System.IO.File]::WriteAllText($unipileFile, ('{"api_key": "' + $key + '"}'), $utf8NoBom)
@@ -207,7 +199,7 @@ if ($key) {
 } elseif (Test-Path $unipileFile) {
     Ok 'Keeping the saved Unipile key'
 } else {
-    Warn 'No Unipile key: the coach will make edits in the browser instead.'
+    Ok 'Browser mode: the coach edits your profile in its own Chrome window'
 }
 
 # ---------------------------------------------------------------- 8. OpenCode config
