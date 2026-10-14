@@ -1,0 +1,8 @@
+{
+  "name": "linkedin-coach-tools",
+  "private": true,
+  "description": "Pinned browser automation server used by the LinkedIn coach",
+  "dependencies": {
+    "@playwright/mcp": "0.0.83"
+  }
+}

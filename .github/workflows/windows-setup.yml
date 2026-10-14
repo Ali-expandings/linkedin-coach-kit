@@ -1,0 +1,60 @@
+name: windows-setup
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run setup.cmd (what the user double-clicks), CI mode
+        shell: cmd
+        run: setup.cmd -CI
+
+      - name: Generated opencode.json
+        shell: pwsh
+        run: Get-Content opencode.json
+
+      - name: Kit is self-contained (uv + node inside tools\)
+        shell: pwsh
+        run: |
+          tools\uv\uv.exe --version
+          tools\node\node.exe --version
+          if (-not (Test-Path tools\node_modules\@playwright\mcp\cli.js)) { throw "browser tool missing" }
+
+      - name: Both MCP servers start from the generated config and expose the expected tools
+        shell: pwsh
+        run: python tests/list_tools.py
+
+      - name: Browser tool drives a real page
+        shell: pwsh
+        run: python tests/browser_smoke.py
+
+      - name: Coach browser profile launches (not signed in on CI, so exit 2 is expected)
+        shell: pwsh
+        run: |
+          $out = & tools\node\node.exe tools\seed-browser-login.mjs --browser chrome --check-only 2>&1 | Out-String
+          Write-Host $out
+          if ($LASTEXITCODE -ne 2 -or $out -notmatch 'NOT_LOGGED_IN') { throw "unexpected result: exit $LASTEXITCODE" }
+
+      - name: OpenCode 1.19.0 loads the project config and connects both servers
+        shell: pwsh
+        run: |
+          npm install -g opencode-ai@1.19.0 --no-audit --no-fund
+          opencode --version
+          $out = opencode mcp list 2>&1 | Out-String
+          Write-Host $out
+          $connected = ([regex]::Matches($out, 'connected')).Count
+          if ($connected -lt 2) { throw "expected 2 connected servers, saw $connected" }
+
+      - name: Running setup a second time is safe
+        shell: cmd
+        run: setup.cmd -CI

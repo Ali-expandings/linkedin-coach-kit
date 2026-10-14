@@ -1,0 +1,48 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-opus-5-5",
+  "default_agent": "linkedin-coach",
+  "autoupdate": false,
+  "mcp": {
+    "linkedin": {
+      "type": "local",
+      "command": ["__UVX__", "--python", "__PYTHON__", "mcp-server-linkedin@4.27.0", "--no-auto-import"],
+      "environment": { "UV_HTTP_TIMEOUT": "300" },
+      "timeout": 300000
+    },
+    "chrome": {
+      "type": "local",
+      "cwd": "__KIT__",
+      "command": [
+        "__NODE__",
+        "__KIT__/tools/node_modules/@playwright/mcp/cli.js",
+        "--browser", "__BROWSER__",
+        "--user-data-dir", "__KIT__/.browser-profile",
+        "--output-dir", "__KIT__/.browser-output"
+      ],
+      "timeout": 120000
+    }
+  },
+  "permission": {
+    "bash": "ask",
+    "edit": "allow",
+    "webfetch": "allow",
+    "linkedin_send_message": "deny",
+    "linkedin_connect_with_person": "deny"
+  },
+  "agent": {
+    "linkedin-coach": {
+      "mode": "primary",
+      "description": "Builds a professional LinkedIn profile end to end: reads the current profile, interviews only for missing facts, writes everything, and applies it in the browser.",
+      "model": "anthropic/claude-opus-5-5",
+      "prompt": "{file:./coach/COACH.md}",
+      "permission": {
+        "bash": "deny",
+        "edit": "allow",
+        "question": "allow",
+        "linkedin_send_message": "deny",
+        "linkedin_connect_with_person": "deny"
+      }
+    }
+  }
+}
